@@ -1,0 +1,71 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply from: 'gretty.plugin'
+
+// JDK 版本
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+repositories {
+    mavenLocal()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    mavenCentral()
+}
+
+dependencies {
+    compile(
+            // springframework
+            'org.springframework:spring-webmvc:4.3.12.RELEASE',
+            'org.springframework:spring-context-support:4.3.12.RELEASE',
+            'org.springframework:spring-aop:4.3.12.RELEASE',
+            'org.springframework:spring-aspects:4.3.12.RELEASE',
+            'org.springframework:spring-beans:4.2.5.RELEASE',
+
+            // jackson
+            'com.fasterxml.jackson.core:jackson-core:2.6.5',
+            'com.fasterxml.jackson.core:jackson-databind:2.6.5',
+            'com.fasterxml.jackson.core:jackson-annotations:2.6.5',
+            // log
+            'log4j:log4j:1.2.17',
+            'org.slf4j:slf4j-api:1.7.25',
+
+            // commons
+            'commons-io:commons-io:2.5',
+            'commons-codec:commons-codec:1.10',
+            'commons-fileupload:commons-fileupload:1.3.1',
+            'org.apache.commons:commons-lang3:3.6',
+
+            'cn.hutool:hutool-all:4.1.8',
+
+            'com.google.code.gson:gson:2.8.1',
+    )
+    compile('io.springfox:springfox-swagger2:2.6.1') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    compile('io.springfox:springfox-swagger-ui:2.6.1') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    testCompile 'junit:junit:4.12', 'org.springframework:spring-test:4.3.12.RELEASE'
+    providedCompile(
+            'javax.servlet:javax.servlet-api:3.1.0'
+    )
+}
+
+compileJava {
+    clean
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+gretty {
+    contextPath ="/mon"
+    httpPort = 7080
+    servletContainer = 'jetty9'
+//    servletContainer = 'tomcat8'
+    debugPort = 4322
+    debugSuspend = false
+}
